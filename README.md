@@ -1,6 +1,6 @@
 # Teeny Weeny Analytics
 
-Super small, privacy focused, analytics package. Currently not frontend, but... whatever.
+Super small, privacy focused, analytics package. Currently no frontend, but... whatever.
 
 What is the future of this project? IDK. I'll use it on a few personal sites and see how I like it. Maybe I'll make a frontend eventually, if I feel like it. For right now I'm going to stick with just querying the DB myself.
 
