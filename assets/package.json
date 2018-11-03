@@ -1,0 +1,18 @@
+{
+  "name": "assets",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "./node_modules/.bin/gulp compress",
+    "copy": "./node_modules/.bin/gulp copy",
+    "dev": "yarn copy && yarn serve",
+    "serve": "./node_modules/.bin/http-server dist/ -c-1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-uglify": "^3.0.1",
+    "http-server": "^0.11.1",
+    "pump": "^3.0.0"
+  }
+}
