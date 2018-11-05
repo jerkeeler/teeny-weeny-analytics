@@ -4,7 +4,7 @@ const pump = require('pump');
 
 gulp.task('compress', (cb) => {
   pump([
-        gulp.src('src/collect.js'),
+        gulp.src('src/v1/collect.js'),
         uglify(),
         gulp.dest('dist/v1'),
     ],
@@ -14,7 +14,9 @@ gulp.task('compress', (cb) => {
 
 gulp.task('copy', (cb) => {
   pump([
-    gulp.src('src/collect.js'),
-    gulp.dest('dist'),
-  ]);
+      gulp.src('src/v1/collect.js'),
+      gulp.dest('dist/v1'),
+    ],
+    cb
+  );
 });

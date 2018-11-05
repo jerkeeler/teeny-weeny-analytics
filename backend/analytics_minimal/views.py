@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.core.cache import cache
+from django.core.exceptions import MultipleObjectsReturned
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views import View
 
@@ -12,7 +13,7 @@ BOT_NAMES = ['googlebot', 'slurp', 'twiceler', 'msnbot', 'kaloogabot', 'yodaobot
              'dotbot', 'duckduckbot', 'baidu', 'bingbot']
 
 
-class Collect(View):
+class V1Collect(View):
     def _convert_to_page_view(self, request: HttpRequest, api_key: APIKey) -> PageView:
         query_params = request.GET
         field_map = PageView.fields_to_query()
@@ -33,12 +34,12 @@ class Collect(View):
         page_view.api_key = api_key
         page_view.site = api_key.site
 
-        page_view.ip = anonymize_ip(request.META.get('REMOTE_ADDR'))
+        page_view.ip = anonymize_ip(request.META.get('HTTP_X_FORWARDED_FOR'))
         page_view.raw_request = request.build_absolute_uri()
         return page_view
 
     def _get_cache_key(self, request: HttpRequest, page_view: PageView) -> str:
-        ip = request.META.get('REMOTE_ADDR')
+        ip = request.META.get('HTTP_X_FORWARDED_FOR')
         ua = request.META.get('HTTP_USER_AGENT', '')
         return f'{ip}-{ua}-{page_view.api_key}-{page_view.hostname}-{page_view.path}-{page_view.event_name}'
 
@@ -90,6 +91,9 @@ class Collect(View):
                 previous_view = PageView.objects.get(api_key=actual_key, event_id=page_view.previous_event_id)
             except PageView.DoesNotExist:
                 print('Previous page view does not exist!')
+                return get_gif_response()
+            except MultipleObjectsReturned:
+                print('Multiple page views with the previous id!')
                 return get_gif_response()
             previous_view.is_bounce = False
             previous_view.duration = page_view.created_at - previous_view.created_at
