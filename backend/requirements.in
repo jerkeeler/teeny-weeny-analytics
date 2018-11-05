@@ -2,6 +2,7 @@ coreapi
 django
 django-filter
 djangorestframework
+gunicorn
 # Currently in pinned to 2.* version because djangorestframework does not work with >= 3.*
 markdown==2.6.11
 pep8
