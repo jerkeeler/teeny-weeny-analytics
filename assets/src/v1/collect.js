@@ -87,11 +87,11 @@
     // Navigation 2 API
     var perfEntries = performance.getEntriesByType('navigation');
     if (perfEntries.length > 0)
-      return perfEntries[0].domInteractive;
+      return Math.round(perfEntries[0].domInteractive);
 
     // Navigation 1 API
     var perfData = window.performance.timing;
-    return perfData.domInteractive - perfData.navigationStart;
+    return Math.round(perfData.domInteractive - perfData.navigationStart);
   }
 
   function getNewUserData() {
