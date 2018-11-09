@@ -66,8 +66,7 @@ class PageView(TimeStampModel, TokenMixin):
     is_new_session: bool = models.BooleanField(default=False)
     is_new_user: bool = models.BooleanField(default=False)
     page_load_time: float = models.FloatField(null=True, blank=True)
-    referrer: str = models.CharField(max_length=VARCHAR_LENGTH, null=True,
-                                     blank=True)
+    referrer: str = models.TextField(null=True, blank=True)
     screen_height: int = models.IntegerField(null=True, blank=True)
     screen_width: int = models.IntegerField(null=True, blank=True)
 

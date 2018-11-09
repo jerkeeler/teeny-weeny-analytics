@@ -2,10 +2,13 @@ from typing import Any
 
 from django.core.cache import cache
 from django.core.exceptions import MultipleObjectsReturned
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.db.models import Avg, Count, Q, FloatField
+from django.db.models.functions import Cast
+from django.http import HttpResponse, HttpRequest, JsonResponse, Http404
 from django.views import View
+from django.views.generic.base import TemplateView
 
-from analytics_minimal.models import APIKey, PageView
+from analytics_minimal.models import APIKey, PageView, Site
 from analytics_minimal.utils import anonymize_ip, get_gif_response
 
 BAD_RESPONSE = JsonResponse({'error': 'Bad request'}, status=400)
@@ -105,3 +108,32 @@ class V1Collect(View):
 class Sandbox(View):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return get_gif_response()
+
+
+class SiteView(TemplateView):
+    template_name = 'site.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise Http404
+        return super().get(self, request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        site = Site.objects.get(hostname=kwargs.get('hostname'))
+        context['site'] = site
+        context['site_stats']= {
+            'bounce_rate': round((PageView.objects.filter(site=site, is_bounce=True).count() /
+                                  PageView.objects.filter(site=site).count()) * 100, 2),
+            'uniques': PageView.objects.filter(site=site, is_new_user=True).count(),
+            'total': PageView.objects.filter(site=site).count(),
+            'duration': PageView.objects.filter(site=site).all().aggregate(Avg('duration'))['duration__avg'],
+        }
+        context['page_stats'] = PageView.objects.filter(site=site).values('path').annotate(
+            views=Count('token'),
+            duration=Avg('duration'),
+            bounce_rate=(Cast(Count('token', filter=Q(is_bounce=True)), FloatField()) /
+                         Cast(Count('token'), FloatField())) * 100,
+        ).order_by('-views')
+        PageView.objects.filter()
+        return context

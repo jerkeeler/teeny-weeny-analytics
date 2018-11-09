@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>{{ site.hostname }} Overview </h1>
+
+    <hr>
+    <h4>Site Wide Stats</h4>
+    <table>
+    <thead>
+        <tr>
+            <th>Bounce Rate</th>
+            <th>Unique Views</th>
+            <th>Total Views</th>
+            <th>Average Duration</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ site_stats.bounce_rate }}%</td>
+            <td>{{ site_stats.uniques }}</td>
+            <td>{{ site_stats.total }}</td>
+            <td>{{ site_stats.duration }}</td>
+        </tr>
+    </tbody>
+    </table>
+
+    <hr>
+    <h4>Page Stats</h4>
+    <table>
+    <thead>
+        <tr>
+            <th>Page</th>
+            <th>Bounce Rate</th>
+            <th>Unique Views</th>
+            <th>Total Views</th>
+            <th>Average Duration</th>
+        </tr>
+    </thead>
+    <tbody>
+    {%  for page in page_stats %}
+        <tr>
+            <td>{{ page.path }}</td>
+            <td>{{ page.bounce_rate | floatformat }}%</td>
+            <td>N/A</td>
+            <td>{{ page.views }}</td>
+            <td>{{ page.duration }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{%  endblock %}
