@@ -3,6 +3,8 @@
 {% block content %}
     <h1>{{ site.hostname }} Overview </h1>
 
+    <h2>Current Visitors: {{ current_visitors }}</h2>
+
     <hr>
     <h4>Site Wide Stats</h4>
     <table>
@@ -25,6 +27,7 @@
     </table>
 
     <hr>
+
     <h4>Page Stats</h4>
     <table>
     <thead>
@@ -41,9 +44,75 @@
         <tr>
             <td>{{ page.path }}</td>
             <td>{{ page.bounce_rate | floatformat }}%</td>
-            <td>N/A</td>
+            <td>{{ page.unique_page_views }}</td>
             <td>{{ page.views }}</td>
-            <td>{{ page.duration }}</td>
+            <td>{{ page.avg_duration }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <hr>
+
+    <h4>Referrers</h4>
+    <table>
+    <thead>
+        <tr>
+            <th>Referrer</th>
+            <th>Occurrences</th>
+        </tr>
+    </thead>
+    <tbody>
+    {%  for referrer in referrer_stats %}
+        <tr>
+            <td>{{ referrer.referrer }}</td>
+            <td>{{ referrer.tcount }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <hr>
+
+    <h4>Most Used Screen Sizes</h4>
+    <table>
+    <thead>
+        <tr>
+            <th>Unique Occurrences</th>
+            <th>Total Occurrences</th>
+            <th>Screen Width</th>
+            <th>Screen Height</th>
+        </tr>
+    </thead>
+    <tbody>
+    {%  for screen in screen_stats %}
+        <tr>
+            <td>{{ screen.unique_occurrences }}</td>
+            <td>{{ screen.tcount }}</td>
+            <td>{{ screen.screen_width }}</td>
+            <td>{{ screen.screen_height }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <hr>
+
+    <h4>Most Used Browsers</h4>
+    <table>
+    <thead>
+        <tr>
+            <th>Unique Occurrences</th>
+            <th>Total Occurrences</th>
+            <th>Browser</th>
+        </tr>
+    </thead>
+    <tbody>
+    {%  for browser in browser_stats %}
+        <tr>
+            <td>{{ browser.unique_occurrences }}</td>
+            <td>{{ browser.tcount }}</td>
+            <td>{{ browser.browser }}</td>
         </tr>
     {% endfor %}
     </tbody>

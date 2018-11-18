@@ -23,3 +23,14 @@ def get_gif_response(status_code: int = 200) -> HttpResponse:
     response.status_code = status_code
     response.write(b64decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'))
     return response
+
+
+def get_hostname(url: str) -> str:
+    hostname = url.replace('http://', '').replace('https://', '').split('/')[0]
+    hostname = hostname.replace('www.', '')
+    return hostname
+
+
+def get_browser(browser: str) -> str:
+    browser = ' '.join(browser.split(' ')[:2])
+    return  browser
